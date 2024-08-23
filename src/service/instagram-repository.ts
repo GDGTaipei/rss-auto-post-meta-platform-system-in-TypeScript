@@ -1,10 +1,10 @@
-import { InstagramRepository  } from '../repository/index';
+import { InstagramService  } from '../repository/service';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-export class InstagramRepositoryImplement implements InstagramRepository {
-  private graphAPIPath: string = process.env.INSTAGRAM_GRAPH_API_PATH;
-  private graphAPIVersion: string = process.env.INSTAGRAM_GRAPH_API_VERSION;
+export class InstagramServiceImplement implements InstagramService {
+  private graphAPIPath: string = process.env.INSTAGRAM_GRAPH_API_PATH || '';
+  private graphAPIVersion: string = process.env.INSTAGRAM_GRAPH_API_VERSION || '';
 
   constructor() {
 

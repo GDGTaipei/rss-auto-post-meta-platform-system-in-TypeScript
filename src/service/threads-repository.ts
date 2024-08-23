@@ -1,11 +1,10 @@
-import { ThreadsRepository  } from '../repository/index';
+import { ThreadsService  } from '../repository/service';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-export class ThreadsRepositoryImplement implements ThreadsRepository {
-  private graphAPIPath: string = process.env.THREADS_GRAPH_API_PATH;
-  private graphAPIVersion: string = process.env.THREADS_GRAPH_API_VERSION;
-
+export class ThreadsServiceImplement implements ThreadsService {
+  private graphAPIPath: string = process.env.THREADS_GRAPH_API_PATH || '';
+  private graphAPIVersion: string = process.env.THREADS_GRAPH_API_VERSION || '';
   constructor() {
 
   }
