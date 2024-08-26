@@ -1,4 +1,4 @@
-import { InstagramProperties, MediaType } from '../entites'
+import { InstagramProperties, MediaType } from '../entities'
 import { InstagramServiceRepository } from '../repository'
 import { InstagramServiceImplement } from '../service'
 

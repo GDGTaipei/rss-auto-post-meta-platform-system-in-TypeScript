@@ -1,4 +1,4 @@
-import { FacebookProperties } from '../entites'
+import { FacebookProperties } from '../entities'
 import { FacebookServiceRepository } from '../repository'
 import { FacebookServiceImplement } from '../service'
 

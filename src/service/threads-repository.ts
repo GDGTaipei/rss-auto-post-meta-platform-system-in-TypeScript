@@ -1,7 +1,7 @@
 import { ThreadsServiceRepository, FetchAPIRepository } from '../repository';
 import * as dotenv from 'dotenv';
 import { FetchAPIFetchAPIRepositoryImplement } from '../infrastructure';
-import { ThreadsProperties, ThreadsReplyProperties } from '../entites';
+import { ThreadsProperties, ThreadsReplyProperties } from '../entities';
 
 dotenv.config();
 

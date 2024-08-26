@@ -1,7 +1,7 @@
 import { FacebookServiceRepository, FetchAPIRepository } from '../repository';
 import * as dotenv from 'dotenv';
 import { FetchAPIFetchAPIRepositoryImplement } from '../infrastructure';
-import { FacebookProperties } from '../entites';
+import { FacebookProperties } from '../entities';
 
 dotenv.config();
 

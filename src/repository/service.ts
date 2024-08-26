@@ -1,4 +1,4 @@
-import {FacebookProperties, InstagramProperties, ThreadsProperties} from '../entites'
+import {FacebookProperties, InstagramProperties, ThreadsProperties} from '../entities'
 
 
 export interface MetaCommonServiceRepository {

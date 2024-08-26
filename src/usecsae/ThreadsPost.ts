@@ -1,4 +1,4 @@
-import { ThreadsProperties, MediaType } from '../entites'
+import { ThreadsProperties, MediaType } from '../entities'
 import { ThreadsServiceRepository } from '../repository'
 import { ThreadsServiceImplement } from '../service'
 
