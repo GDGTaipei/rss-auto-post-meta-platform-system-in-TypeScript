@@ -1,8 +1,16 @@
 import { FacebookProperties } from '../entities'
-import { FacebookServiceRepository } from '../repository'
+import { FacebookServiceRepository, FetchAPIRepository } from '../repository'
 import { FacebookServiceImplement } from '../service'
+import { FetchAPIFetchAPIRepositoryImplement } from '../infrastructure';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export class FacebookPostUseCase {
+  private apiService: FetchAPIRepository
+  private graphAPIPath: string = 'https://graph.facebook.com';
+  private graphAPIVersion: string = process.env.FACEBOOK_GRAPH_API_VERSION || '';
+  private apiToken: string = process.env.FACEBOOK_API_TOKEN || '';
   private metaService: FacebookServiceRepository
   private postMessage: string
   private scheduled_publish_time?: number
@@ -10,12 +18,12 @@ export class FacebookPostUseCase {
   private postId!: string
   private replyId?: string
 
-  constructor(postMessage: string, scheduled_publish_time?: number, replyMessage?: string) { 
-    this.metaService = new FacebookServiceImplement()
+  constructor(postMessage: string, scheduled_publish_time?: number, replyMessage?: string) {
+    this.apiService = new FetchAPIFetchAPIRepositoryImplement(`${this.graphAPIPath}/${this.graphAPIVersion}`, this.apiToken)
+    this.metaService = new FacebookServiceImplement(this.apiService)
     this.postMessage = postMessage
     this.scheduled_publish_time = scheduled_publish_time 
     this.replyMessage = replyMessage
-
   }
 
   private payloadCreator(inputMessage:string): FacebookProperties {

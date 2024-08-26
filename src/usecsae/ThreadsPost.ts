@@ -1,19 +1,27 @@
 import { ThreadsProperties, MediaType } from '../entities'
-import { ThreadsServiceRepository } from '../repository'
+import { FetchAPIRepository, ThreadsServiceRepository } from '../repository'
 import { ThreadsServiceImplement } from '../service'
+import { FetchAPIFetchAPIRepositoryImplement } from '../infrastructure';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export class ThreadsPostUseCase {
+  private apiService: FetchAPIRepository
   private metaService: ThreadsServiceRepository
+  private graphAPIPath: string = 'https://graph.threads.net';
+  private graphAPIVersion: string = process.env.THREADS_GRAPH_API_VERSION || '';
+  private apiToken: string = process.env.THREADS_GRAPH_API_VERSION || '';
   private postMessage: string
   private replyMessage?: string
   private postId!: string
   private replyId?: string
 
   constructor(postMessage: string, replyMessage?: string) { 
-    this.metaService = new ThreadsServiceImplement()
+    this.apiService = new FetchAPIFetchAPIRepositoryImplement(`${this.graphAPIPath}/${this.graphAPIVersion}`, this.apiToken)
+    this.metaService = new ThreadsServiceImplement(this.apiService)
     this.postMessage = postMessage
     this.replyMessage = replyMessage
-
   }
 
   private payloadCreator(inputMessage:string, image_url?: string, video_url?: string, replyId?: string): ThreadsProperties {

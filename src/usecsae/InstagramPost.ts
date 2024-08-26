@@ -1,19 +1,28 @@
 import { InstagramProperties, MediaType } from '../entities'
-import { InstagramServiceRepository } from '../repository'
+import { FetchAPIRepository, InstagramServiceRepository } from '../repository'
 import { InstagramServiceImplement } from '../service'
+import { FetchAPIFetchAPIRepositoryImplement } from '../infrastructure';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export class InstagramPostUseCase {
+  private apiService: FetchAPIRepository
   private metaService: InstagramServiceRepository
+  private graphAPIPath: string = 'https://graph.facebook.com';
+  private graphAPIVersion: string = process.env.INSTAGRAM_GRAPH_API_VERSION || '';
+  private apiToken: string = process.env.INSTAGRAM_GRAPH_API_VERSION || '';
+
   private postMessage: string
   private replyMessage?: string
   private postId!: string
   private replyId?: string
 
   constructor(postMessage: string, replyMessage?: string) { 
-    this.metaService = new InstagramServiceImplement()
+    this.apiService = new FetchAPIFetchAPIRepositoryImplement(`${this.graphAPIPath}/${this.graphAPIVersion}`, this.apiToken)
+    this.metaService = new InstagramServiceImplement(this.apiService)
     this.postMessage = postMessage
     this.replyMessage = replyMessage
-
   }
 
   private payloadCreator(inputMessage:string, image_url?: string, video_url?: string): InstagramProperties {
