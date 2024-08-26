@@ -1,17 +1,17 @@
-import { fetchAPI } from '../repository'
+import { FetchAPIRepository } from '../repository'
 import fetch, { Request, Response }  from 'node-fetch';
 
-export class fetchAPIImplement implements fetchAPI {
+export class FetchAPIFetchAPIRepositoryImplement implements FetchAPIRepository {
 
   private url: string = '';
   private apiToken: string = '';
 
-  constructor(url:string,headers:string,body:string){ 
+  constructor(url:string, apiToken:string){ 
     this.url = url;
-    this.apiToken = headers;
+    this.apiToken = apiToken;
   }
 
-  async getContent(path:string, body: string): Promise<{ [key: string]: string }> {
+  async getContent(path:string, body: {[key:string]:string}): Promise<{ [key: string]: string }> {
     const response : Response = await fetch(`${this.url}/${path}`, {
       method: 'GET',
       headers: {
@@ -24,7 +24,7 @@ export class fetchAPIImplement implements fetchAPI {
     return data;
   }
 
-  async postContent(path:string, body: string): Promise<{ [key: string]: string }> {
+  async postContent(path:string, body: {[key:string]:string}): Promise<{ [key: string]: string }> {
     const response : Response = await fetch(`${this.url}/${path}`, {
       method: 'POST',
       headers: {
