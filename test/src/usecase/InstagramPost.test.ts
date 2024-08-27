@@ -1,4 +1,4 @@
-import { InstagramPostUseCase } from '../../../src/usecsae';
+import { InstagramPostUseCase } from '../../../src/usecase';
 import { InstagramServiceRepository } from '../../../src/repository';
 import { InstagramProperties, MediaType } from '../../../src/entities';
 import { mockInstagramServiceRepository, mockInstagramPageId, mockInstagramReplyId, mockInstagramPostContainerId, mockInstagramPostId } from '../../mock';

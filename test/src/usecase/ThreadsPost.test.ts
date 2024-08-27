@@ -1,4 +1,4 @@
-import { ThreadsPostUseCase } from '../../../src/usecsae';
+import { ThreadsPostUseCase } from '../../../src/usecase';
 import { ThreadsServiceRepository } from '../../../src/repository';
 import { ThreadsProperties, MediaType } from '../../../src/entities';
 import { mockThreadsServiceRepository, mockThreadsPageId, mockThreadsReplyId, mockThreadsPostContainerId, mockThreadsPostId, mockThreadsReplyContainerId } from '../../mock';

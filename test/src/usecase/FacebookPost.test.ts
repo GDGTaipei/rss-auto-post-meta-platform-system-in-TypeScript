@@ -1,4 +1,4 @@
-import { FacebookPostUseCase } from '../../../src/usecsae';
+import { FacebookPostUseCase } from '../../../src/usecase';
 import { FacebookServiceRepository } from '../../../src/repository';
 import { FacebookProperties } from '../../../src/entities';
 import { mockFacebookServiceRepository, mockFacebookPageId, mockFacebookReplyId } from '../../mock';
