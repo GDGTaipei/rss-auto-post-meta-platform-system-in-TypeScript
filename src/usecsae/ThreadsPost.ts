@@ -1,33 +1,45 @@
 import { ThreadsProperties, MediaType } from '../entities'
-import { FetchAPIRepository, ThreadsServiceRepository } from '../repository'
-import { ThreadsServiceImplement } from '../service'
-import { FetchAPIFetchAPIRepositoryImplement } from '../infrastructure';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
+import { ThreadsServiceRepository } from '../repository'
 
 export class ThreadsPostUseCase {
-  private apiService: FetchAPIRepository
   private metaService: ThreadsServiceRepository
-  private graphAPIPath: string = 'https://graph.threads.net';
-  private graphAPIVersion: string = process.env.THREADS_GRAPH_API_VERSION || '';
-  private apiToken: string = process.env.THREADS_GRAPH_API_VERSION || '';
   private postMessage: string
+  private postImage?: string
+  private postVideo?: string
   private replyMessage?: string
   private postId!: string
   private replyId?: string
 
-  constructor(postMessage: string, replyMessage?: string) { 
-    this.apiService = new FetchAPIFetchAPIRepositoryImplement(`${this.graphAPIPath}/${this.graphAPIVersion}`, this.apiToken)
-    this.metaService = new ThreadsServiceImplement(this.apiService)
+  constructor(service: ThreadsServiceRepository, postMessage: string, postImage?: string,postVideo?: string, replyMessage?: string) {
+    this.metaService = service
     this.postMessage = postMessage
+    this.postImage = postImage
+    this.postVideo = postVideo
     this.replyMessage = replyMessage
   }
 
-  private payloadCreator(inputMessage:string, image_url?: string, video_url?: string, replyId?: string): ThreadsProperties {
+  /**
+     * Text in single post cannot be more than 500 characters
+     * #reference https://developers.facebook.com/docs/threads/overview/#limitations
+     */
+  private textValidator(inputMessage: string): void {
+    if(!inputMessage) {
+      throw new Error('Text cannot be empty')
+    }
+    
+    if(inputMessage.length > 500) {
+      throw new Error('Text cannot be more than 500 characters')
+    }
+  }
+
+  private payloadCreator(inputMessage:string, image_url?: string, video_url?: string): ThreadsProperties {
     let payload: ThreadsProperties = {
       text: inputMessage,
       media_type: MediaType.TEXT
+    }
+
+    if(image_url && video_url) {
+      throw new Error('Cannot have both image and video in the same post')
     }
 
     if(image_url) {
@@ -38,22 +50,22 @@ export class ThreadsPostUseCase {
       payload.media_type = MediaType.VIDEO
     }
 
-    if(replyId){
-      payload.reply_to_id = replyId
-    }
-
     return payload
   }
 
   async exec(): Promise<string[]> {
 
-    const blogPost = this.payloadCreator(this.postMessage)
+    this.textValidator(this.postMessage)
+
+    const blogPost = this.payloadCreator(this.postMessage, this.postImage, this.postVideo)
     const postContainer = await this.metaService.createContainer(blogPost)
     this.postId = await this.metaService.sendContainer(postContainer)
 
     if(this.replyMessage) {
       const replyPost = this.payloadCreator(this.replyMessage)
-      this.replyId = await this.metaService.createReplyContainer(replyPost)
+      replyPost.reply_to_id = this.postId
+      const replyContainer = await this.metaService.createReplyContainer(replyPost)
+      this.replyId = await this.metaService.sendContainer(replyContainer)
     }
 
     return [this.postId, this.replyId ? this.replyId : '']
