@@ -19,7 +19,7 @@ export interface FacebookReplyProperties {
 export interface InstagramProperties {
   image_url?: string;
   video_url?: string;
-  caption: string;
+  caption?: string;
   media_type: MediaType;
 }
 
