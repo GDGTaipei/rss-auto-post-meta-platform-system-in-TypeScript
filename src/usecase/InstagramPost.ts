@@ -1,40 +1,34 @@
 import { InstagramProperties, MediaType } from '../entities'
-import { InstagramServiceRepository } from '../repository'
+import { FetchAPIRepository, InstagramServiceRepository } from '../repository'
+import { InstagramServiceImplement } from '../service'
+import { FetchAPIFetchAPIRepositoryImplement } from '../infrastructure';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export class InstagramPostUseCase {
+  private apiService: FetchAPIRepository
   private metaService: InstagramServiceRepository
+  private graphAPIPath: string = 'https://graph.facebook.com';
+  private graphAPIVersion: string = process.env.INSTAGRAM_GRAPH_API_VERSION || '';
+  private apiToken: string = process.env.INSTAGRAM_GRAPH_API_VERSION || '';
 
-  private postMessage?: string
-  private postImage?: string
-  private postVideo?: string
+  private postMessage: string
   private replyMessage?: string
   private postId!: string
   private replyId?: string
 
-  /**
-   *  InstagramPostUseCase constructor
-   * @description InstagramPostUseCase constructor, either `postImage` or `postVideo` must be provided
-   * @param service : InstagramServiceRepository
-   * @param postMessage 
-   * @param postImage
-   * @param postVideo
-   * @param replyMessage 
-   */
-  constructor(service: InstagramServiceRepository, postMessage?: string, postImage?: string,postVideo?: string, replyMessage?: string) {
-    this.metaService = service
+  constructor(postMessage: string, replyMessage?: string) { 
+    this.apiService = new FetchAPIFetchAPIRepositoryImplement(`${this.graphAPIPath}/${this.graphAPIVersion}`, this.apiToken)
+    this.metaService = new InstagramServiceImplement(this.apiService)
     this.postMessage = postMessage
-    this.postImage = postImage
-    this.postVideo = postVideo
     this.replyMessage = replyMessage
   }
 
-  private payloadCreator(inputMessage?:string, image_url?: string, video_url?: string): InstagramProperties {
+  private payloadCreator(inputMessage:string, image_url?: string, video_url?: string): InstagramProperties {
     let payload: InstagramProperties = {
+      caption: inputMessage,
       media_type: MediaType.TEXT
-    }
-
-    if(image_url && video_url) {
-      throw new Error('Cannot have both image and video in the same post')
     }
 
     if(image_url) {
@@ -45,22 +39,12 @@ export class InstagramPostUseCase {
       payload.media_type = MediaType.VIDEO
     }
 
-    if(inputMessage) {
-      payload.caption = inputMessage
-    } 
-
     return payload
   }
 
   async exec(): Promise<string[]> {
 
-    if(!this.postImage && !this.postVideo) {
-      throw new Error('Must have either image or video in the post')
-    }else if(this.postImage && this.postVideo) {
-      throw new Error('Cannot have both image and video in the same post')
-    }
-
-    const blogPost = this.payloadCreator(this.postMessage, this.postImage, this.postVideo)
+    const blogPost = this.payloadCreator(this.postMessage)
     const postContainer = await this.metaService.createContainer(blogPost)
     this.postId = await this.metaService.sendContainer(postContainer)
 
