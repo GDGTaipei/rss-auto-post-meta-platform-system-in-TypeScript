@@ -10,6 +10,13 @@ export interface FacebookProperties {
   message: string;
   published: boolean;
   scheduled_publish_time?: number;
+  attached_media?: {[key: string]: string} [];
+}
+
+export interface FacebookImageProperties {
+  url: string;
+  published: boolean;
+  scheduled_publish_time?: number;
 }
 
 export interface FacebookReplyProperties {
@@ -23,11 +30,8 @@ export interface InstagramProperties {
   media_type: MediaType;
 }
 
-export interface ThreadsProperties {
-  image_url?: string;
-  video_url?: string;
+export interface ThreadsProperties extends Partial<InstagramProperties> {
   text: string;
-  media_type: MediaType;
   reply_to_id?: string
 }
 

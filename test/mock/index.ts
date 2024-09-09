@@ -22,7 +22,8 @@ export const mockThreadsReplyId = 'mock_threads_reply_id';
 
 export const mockFacebookServiceRepository: jest.Mock<FacebookServiceRepository> = jest.fn(() => ({
   sendPost: jest.fn(),
-  sendReply: jest.fn()
+  sendReply: jest.fn(),
+  createContainer: jest.fn()
 }));
 
 export const mockInstagramServiceRepository: jest.Mock<InstagramServiceRepository> = jest.fn(() => ({

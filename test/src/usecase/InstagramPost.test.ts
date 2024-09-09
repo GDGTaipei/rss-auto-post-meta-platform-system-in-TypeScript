@@ -8,6 +8,8 @@ describe('InstagramPostUseCase', () => {
 
   let instagramService: InstagramServiceRepository
   const postMessage: string = 'test post message'
+  const postImage: string = 'test post image'
+  const postVideo: string = 'test post video'
   const replyMessage: string =  'test reply message'
 
   beforeAll(() => {
@@ -24,7 +26,7 @@ describe('InstagramPostUseCase', () => {
   })
 
   it('should throw error if either image and video is not provided', async () => {
-    const usecase = new InstagramPostUseCase(instagramService, postMessage)
+    const usecase = new InstagramPostUseCase(instagramService, postMessage, undefined, undefined)
     await expect(usecase.exec()).rejects.toThrowError('Must have either image or video in the post')
   })
 

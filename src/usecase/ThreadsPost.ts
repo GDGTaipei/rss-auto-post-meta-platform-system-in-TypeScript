@@ -1,30 +1,48 @@
 import { ThreadsProperties, MediaType } from '../entities'
-import { FetchAPIRepository, ThreadsServiceRepository } from '../repository'
+import { FetchAPIRepository, ThreadsServiceRepository, socialPlatformCommonUseCase } from '../repository'
 import { ThreadsServiceImplement } from '../service'
 import { FetchAPIFetchAPIRepositoryImplement } from '../infrastructure';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export class ThreadsPostUseCase {
-  private apiService: FetchAPIRepository
+export class ThreadsPostUseCase implements socialPlatformCommonUseCase {
   private metaService: ThreadsServiceRepository
-  private graphAPIPath: string = 'https://graph.threads.net';
-  private graphAPIVersion: string = process.env.THREADS_GRAPH_API_VERSION || '';
-  private apiToken: string = process.env.THREADS_GRAPH_API_VERSION || '';
   private postMessage: string
+  private postImage?: string
+  private postVideo?: string
   private replyMessage?: string
   private postId!: string
   private replyId?: string
 
-  constructor(postMessage: string, replyMessage?: string) { 
-    this.apiService = new FetchAPIFetchAPIRepositoryImplement(`${this.graphAPIPath}/${this.graphAPIVersion}`, this.apiToken)
-    this.metaService = new ThreadsServiceImplement(this.apiService)
+  constructor(apiService: ThreadsServiceRepository, postMessage: string, postImage?: string, postVideo?: string, replyMessage?: string) { 
+    this.metaService = apiService
     this.postMessage = postMessage
+    this.postImage = postImage
+    this.postVideo = postVideo
     this.replyMessage = replyMessage
   }
 
-  private payloadCreator(inputMessage:string, image_url?: string, video_url?: string, replyId?: string): ThreadsProperties {
+  isContentValid(){
+
+    if(this.postMessage.length === 0) {
+      throw new Error('Text cannot be empty')
+    }
+
+    if(this.postMessage.length > 500) {
+      throw new Error('Text cannot be more than 500 characters')
+    }
+
+    if(this.postImage && this.postVideo) {
+      throw new Error('Cannot have both image and video in the same post')
+    }
+
+    if(!this.postImage && !this.postVideo) {
+      throw new Error('Must have either image or video in the post')
+    }
+  }
+
+  payloadCreator(inputMessage:string, image_url?: string, video_url?: string, replyId?: string): ThreadsProperties {
     let payload: ThreadsProperties = {
       text: inputMessage,
       media_type: MediaType.TEXT
@@ -46,8 +64,8 @@ export class ThreadsPostUseCase {
   }
 
   async exec(): Promise<string[]> {
-
-    const blogPost = this.payloadCreator(this.postMessage)
+    this.isContentValid()
+    const blogPost = this.payloadCreator(this.postMessage, this.postImage, this.postVideo)
     const postContainer = await this.metaService.createContainer(blogPost)
     this.postId = await this.metaService.sendContainer(postContainer)
 
