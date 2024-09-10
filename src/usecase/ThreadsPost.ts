@@ -36,10 +36,6 @@ export class ThreadsPostUseCase implements socialPlatformCommonUseCase {
     if(this.postImage && this.postVideo) {
       throw new Error('Cannot have both image and video in the same post')
     }
-
-    if(!this.postImage && !this.postVideo) {
-      throw new Error('Must have either image or video in the post')
-    }
   }
 
   payloadCreator(inputMessage:string, image_url?: string, video_url?: string, replyId?: string): ThreadsProperties {
@@ -70,8 +66,9 @@ export class ThreadsPostUseCase implements socialPlatformCommonUseCase {
     this.postId = await this.metaService.sendContainer(postContainer)
 
     if(this.replyMessage) {
-      const replyPost = this.payloadCreator(this.replyMessage)
-      this.replyId = await this.metaService.createReplyContainer(replyPost)
+      const replyPost = this.payloadCreator(this.replyMessage, undefined, undefined, this.postId)
+      const replyContainer = await this.metaService.createReplyContainer(replyPost)
+      this.replyId = await this.metaService.sendContainer(replyContainer)
     }
 
     return [this.postId, this.replyId ? this.replyId : '']
