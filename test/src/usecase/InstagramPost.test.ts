@@ -2,14 +2,11 @@ import { InstagramPostUseCase } from '../../../src/usecase';
 import { InstagramServiceRepository } from '../../../src/repository';
 import { InstagramProperties, MediaType } from '../../../src/entities';
 import { mockInstagramServiceRepository, mockInstagramPageId, mockInstagramReplyId, mockInstagramPostContainerId, mockInstagramPostId } from '../../mock';
-import { clear } from 'console';
 
 describe('InstagramPostUseCase', () => {
 
   let instagramService: InstagramServiceRepository
   const postMessage: string = 'test post message'
-  const postImage: string = 'test post image'
-  const postVideo: string = 'test post video'
   const replyMessage: string =  'test reply message'
 
   beforeAll(() => {
