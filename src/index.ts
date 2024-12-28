@@ -1,6 +1,6 @@
-import facebook from './facebook';
-import instagram from './instagram';
-import threads from './threads';
+import facebook from './application/facebook';
+import instagram from './application/instagram';
+import threads from './application/threads';
 
 import express from 'express';
 const app = express()
