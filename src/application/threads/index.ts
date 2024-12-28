@@ -1,9 +1,9 @@
-import { threadsGraphAPIPath, threadsGraphAPIVersion, threadsGraphApiToken } from '../readConfig';
-import { ThreadsServiceImplement } from '../../service';
-import { ThreadsPostUseCase } from '../../usecase';
-import { ThreadsServiceRepository, FetchAPIRepository } from '../../repository';
+import { threadsGraphAPIPath, threadsGraphAPIVersion, threadsGraphApiToken } from '../readConfig.js';
+import { ThreadsServiceImplement } from '../../service/index.js';
+import { ThreadsPostUseCase } from '../../usecase/index.js';
+import { ThreadsServiceRepository, FetchAPIRepository } from '../../repository/index.js';
 import express, { Request, Response} from 'express';
-import { FetchAPIFetchAPIRepositoryImplement } from '../../infrastructure';
+import { FetchAPIFetchAPIRepositoryImplement } from '../../infrastructure/index.js';
 
 const app = express()
 

@@ -1,6 +1,6 @@
-import { FacebookServiceRepository, FetchAPIRepository } from '../repository';
+import { FacebookServiceRepository, FetchAPIRepository } from '../repository/index.js';
 import * as dotenv from 'dotenv';
-import { FacebookImageProperties, FacebookProperties } from '../entities';
+import { FacebookImageProperties, FacebookProperties } from '../entities/index.js';
 
 dotenv.config();
 

@@ -1,5 +1,5 @@
-import { FacebookProperties } from '../entities'
-import { FacebookServiceRepository } from '../repository'
+import { FacebookProperties } from '../entities/index.js'
+import { FacebookServiceRepository } from '../repository/index.js'
 
 export class FacebookPostUseCase {
   private metaService: FacebookServiceRepository

@@ -1,4 +1,4 @@
-import { ThreadsProperties, InstagramProperties } from "../entities";
+import { ThreadsProperties, InstagramProperties } from "../entities/index.js";
 
 
 export interface socialPlatformCommonUseCase {

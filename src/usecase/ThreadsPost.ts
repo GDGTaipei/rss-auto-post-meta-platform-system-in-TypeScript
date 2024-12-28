@@ -1,7 +1,5 @@
-import { ThreadsProperties, MediaType } from '../entities'
-import { FetchAPIRepository, ThreadsServiceRepository, socialPlatformCommonUseCase } from '../repository'
-import { ThreadsServiceImplement } from '../service'
-import { FetchAPIFetchAPIRepositoryImplement } from '../infrastructure';
+import { ThreadsProperties, MediaType } from '../entities/index.js'
+import { ThreadsServiceRepository, socialPlatformCommonUseCase } from '../repository/index.js'
 import * as dotenv from 'dotenv';
 
 dotenv.config();

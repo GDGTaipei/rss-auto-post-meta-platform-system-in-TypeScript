@@ -1,3 +1,3 @@
-export * from './facebook-repository';
-export * from './instagram-repository';
-export * from './threads-repository';
+export * from './facebook-repository.js';
+export * from './instagram-repository.js';
+export * from './threads-repository.js';

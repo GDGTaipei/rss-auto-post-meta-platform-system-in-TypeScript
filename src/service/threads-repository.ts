@@ -1,6 +1,6 @@
-import { ThreadsServiceRepository, FetchAPIRepository } from '../repository';
+import { ThreadsServiceRepository, FetchAPIRepository } from '../repository/index.js';
 import * as dotenv from 'dotenv';
-import { ThreadsProperties } from '../entities';
+import { ThreadsProperties } from '../entities/index.js';
 
 dotenv.config();
 

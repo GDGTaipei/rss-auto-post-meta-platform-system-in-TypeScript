@@ -1,14 +1,9 @@
-import facebook from './application/facebook';
-import instagram from './application/instagram';
-import threads from './application/threads';
+import facebook from './application/facebook/index.js';
+import instagram from './application/instagram/index.js';
+import threads from './application/threads/index.js';
 
 import express from 'express';
 const app = express()
-
-
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
 
 app.get('/facebook', facebook);
 app.get('/instagram', instagram);

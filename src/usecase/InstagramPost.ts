@@ -1,7 +1,5 @@
-import { InstagramProperties, MediaType } from '../entities'
-import { FetchAPIRepository, InstagramServiceRepository, socialPlatformCommonUseCase } from '../repository'
-import { InstagramServiceImplement } from '../service'
-import { FetchAPIFetchAPIRepositoryImplement } from '../infrastructure';
+import { InstagramProperties, MediaType } from '../entities/index.js'
+import { InstagramServiceRepository, socialPlatformCommonUseCase } from '../repository/index.js'
 import * as dotenv from 'dotenv';
 
 dotenv.config();

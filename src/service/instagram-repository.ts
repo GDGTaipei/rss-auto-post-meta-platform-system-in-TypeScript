@@ -1,6 +1,6 @@
-import { InstagramServiceRepository, FetchAPIRepository } from '../repository';
+import { InstagramServiceRepository, FetchAPIRepository } from '../repository/index.js';
 import * as dotenv from 'dotenv';
-import { InstagramProperties } from '../entities';
+import { InstagramProperties } from '../entities/index.js';
 
 dotenv.config();
 

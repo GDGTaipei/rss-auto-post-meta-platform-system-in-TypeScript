@@ -1,9 +1,9 @@
-import { facebookGraphAPIPath, facebookGraphAPIVersion, facebookApiToken,  } from '../readConfig';
-import { FacebookServiceImplement } from '../../service';
-import { FacebookPostUseCase } from '../../usecase';
-import { FacebookServiceRepository, FetchAPIRepository } from '../../repository';
+import { facebookGraphAPIPath, facebookGraphAPIVersion, facebookApiToken,  } from '../readConfig.js';
+import { FacebookServiceImplement } from '../../service/index.js';
+import { FacebookPostUseCase } from '../../usecase/index.js';
+import { FacebookServiceRepository, FetchAPIRepository } from '../../repository/index.js';
 import express from 'express';
-import { FetchAPIFetchAPIRepositoryImplement } from '../../infrastructure';
+import { FetchAPIFetchAPIRepositoryImplement } from '../../infrastructure/index.js';
 
 const app = express()
 

@@ -1,9 +1,9 @@
-import { instagramGraphAPIPath, instagramGraphAPIVersion, instagramGraphApiToken } from '../readConfig';
-import { InstagramServiceImplement } from '../../service';
-import { InstagramPostUseCase } from '../../usecase';
-import { InstagramServiceRepository, FetchAPIRepository } from '../../repository';
+import { instagramGraphAPIPath, instagramGraphAPIVersion, instagramGraphApiToken } from '../readConfig.js';
+import { InstagramServiceImplement } from '../../service/index.js';
+import { InstagramPostUseCase } from '../../usecase/index.js';
+import { InstagramServiceRepository, FetchAPIRepository } from '../../repository/index.js';
 import express, { Request, Response} from 'express';
-import { FetchAPIFetchAPIRepositoryImplement } from '../../infrastructure';
+import { FetchAPIFetchAPIRepositoryImplement } from '../../infrastructure/index.js';
 
 const app = express()
 

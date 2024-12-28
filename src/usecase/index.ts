@@ -1,3 +1,3 @@
-export * from './FacebookPost'
-export * from './InstagramPost'
-export * from './ThreadsPost'
+export * from './FacebookPost.js'
+export * from './InstagramPost.js'
+export * from './ThreadsPost.js'
