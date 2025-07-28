@@ -1,12 +1,11 @@
 import { SocialMediaPost, PostResult, SocialMediaPort, SocialMediaPlatform } from '../domain/models.js';
-import { FacebookPostUseCase } from '../usecase/FacebookPost.js';
-import { InstagramPostUseCase } from '../usecase/InstagramPost.js';
-import { ThreadsPostUseCase } from '../usecase/ThreadsPost.js';
 import { FetchAPIFetchAPIRepositoryImplement } from './fetch-api.js';
-import { FacebookServiceImplement } from '../service/facebook-repository.js';
-import { InstagramServiceImplement } from '../service/instagram-repository.js';
-import { ThreadsServiceImplement } from '../service/threads-repository.js';
 import { config } from '../config/index.js';
+
+interface MetaApiResponse {
+    id: string;
+    [key: string]: any;
+}
 
 export class SocialMediaService implements SocialMediaPort {
     async post(content: SocialMediaPost): Promise<PostResult> {
@@ -18,13 +17,18 @@ export class SocialMediaService implements SocialMediaPort {
         try {
             switch (content.platform) {
                 case SocialMediaPlatform.FACEBOOK: {
-                    const service = new FacebookServiceImplement(fetchAPIRepository);
-                    const useCase = new FacebookPostUseCase(service, content.message);
-                    const [postId] = await useCase.exec();
+                    const response = await fetchAPIRepository.postContent(
+                        `${config.facebook.pageId}/feed`,
+                        {
+                            message: content.message,
+                            published: "true"  // Meta API expects a string
+                        }
+                    ) as MetaApiResponse;
+
                     return {
                         platform: content.platform,
                         success: true,
-                        postId
+                        postId: response.id
                     };
                 }
                 case SocialMediaPlatform.INSTAGRAM: {
@@ -35,23 +39,52 @@ export class SocialMediaService implements SocialMediaPort {
                             error: 'Image URL is required for Instagram posts'
                         };
                     }
-                    const service = new InstagramServiceImplement(fetchAPIRepository);
-                    const useCase = new InstagramPostUseCase(service, content.message, content.imageUrl);
-                    const [postId] = await useCase.exec();
+
+                    // 1. Create container
+                    const containerResponse = await fetchAPIRepository.postContent(
+                        `${config.instagram.pageId}/media`,
+                        {
+                            caption: content.message,
+                            image_url: content.imageUrl
+                        }
+                    ) as MetaApiResponse;
+
+                    // 2. Publish container
+                    const publishResponse = await fetchAPIRepository.postContent(
+                        `${config.instagram.pageId}/media_publish`,
+                        {
+                            creation_id: containerResponse.id
+                        }
+                    ) as MetaApiResponse;
+
                     return {
                         platform: content.platform,
                         success: true,
-                        postId
+                        postId: publishResponse.id
                     };
                 }
                 case SocialMediaPlatform.THREADS: {
-                    const service = new ThreadsServiceImplement(fetchAPIRepository);
-                    const useCase = new ThreadsPostUseCase(service, content.message, content.imageUrl);
-                    const [postId] = await useCase.exec();
+                    // 1. Create container
+                    const containerResponse = await fetchAPIRepository.postContent(
+                        `${config.threads.userId}/threads`,
+                        {
+                            text: content.message,
+                            ...(content.imageUrl && { image_url: content.imageUrl })
+                        }
+                    ) as MetaApiResponse;
+
+                    // 2. Publish container
+                    const publishResponse = await fetchAPIRepository.postContent(
+                        `${config.threads.userId}/media_publish`,
+                        {
+                            creation_id: containerResponse.id
+                        }
+                    ) as MetaApiResponse;
+
                     return {
                         platform: content.platform,
                         success: true,
-                        postId
+                        postId: publishResponse.id
                     };
                 }
             }
