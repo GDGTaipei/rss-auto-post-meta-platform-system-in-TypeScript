@@ -149,10 +149,19 @@ describe('SocialMediaService', () => {
             expect(result.platform).toBe(SocialMediaPlatform.THREADS);
             expect(result.postId).toBe(mockPostId);
 
+            // 檢查第一步：建立容器
             expect(mockFetchAPI.postContent).toHaveBeenCalledWith(
                 `${config.threads.userId}/threads`,
                 expect.objectContaining({
                     text: mockMessage
+                })
+            );
+
+            // 檢查第二步：發布
+            expect(mockFetchAPI.postContent).toHaveBeenCalledWith(
+                `${config.threads.userId}/media_publish`,
+                expect.objectContaining({
+                    creation_id: mockContainerId
                 })
             );
         });
@@ -171,11 +180,20 @@ describe('SocialMediaService', () => {
             expect(result.success).toBe(true);
             expect(result.postId).toBe(mockPostId);
 
+            // 檢查第一步：建立容器
             expect(mockFetchAPI.postContent).toHaveBeenCalledWith(
                 `${config.threads.userId}/threads`,
                 expect.objectContaining({
                     text: mockMessage,
                     image_url: mockImageUrl
+                })
+            );
+
+            // 檢查第二步：發布
+            expect(mockFetchAPI.postContent).toHaveBeenCalledWith(
+                `${config.threads.userId}/media_publish`,
+                expect.objectContaining({
+                    creation_id: mockContainerId
                 })
             );
         });

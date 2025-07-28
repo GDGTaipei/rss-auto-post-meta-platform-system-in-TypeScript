@@ -25,11 +25,11 @@ describe('ContentGeneratorService', () => {
             expect(content).toBe(mockGeneratedContent);
             expect(global.fetch).toHaveBeenCalledWith(
                 `${config.socialMediaPostApiUrl}/generateSocialMediaContent`,
-                expect.objectContaining({
+                {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ article: mockArticle })
-                })
+                }
             );
         });
 

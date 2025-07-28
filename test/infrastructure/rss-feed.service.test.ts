@@ -1,8 +1,8 @@
 import { RssFeedService } from '../../src/infrastructure/rss-feed.service.js';
+import { mockRssUrl, mockImageUrl } from '../mock/index.js';
 
 describe('RssFeedService', () => {
     let service: RssFeedService;
-    const mockRssUrl = 'https://test.com/feed.xml';
 
     beforeEach(() => {
         service = new RssFeedService();
@@ -21,7 +21,7 @@ describe('RssFeedService', () => {
                                 <title>Test Article</title>
                                 <link>https://test.com/article</link>
                                 <pubDate>${new Date().toISOString()}</pubDate>
-                                <content:encoded><![CDATA[<p>Test content with <img src="https://test.com/image.jpg" /></p>]]></content:encoded>
+                                <content:encoded><![CDATA[<p>Test content with <img src="${mockImageUrl}" /></p>]]></content:encoded>
                                 <description>Test content</description>
                             </item>
                         </channel>
@@ -39,7 +39,7 @@ describe('RssFeedService', () => {
                 link: 'https://test.com/article',
                 content: expect.stringContaining('Test content'),
                 contentSnippet: 'Test content',
-                imageUrl: 'https://test.com/image.jpg'
+                imageUrl: mockImageUrl
             }));
 
             expect(global.fetch).toHaveBeenCalledWith(mockRssUrl);

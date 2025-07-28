@@ -2,14 +2,24 @@ import { jest } from '@jest/globals';
 import { Request, Response } from 'express';
 import { app, socialMediaPostFlow } from '../../src/application/app.js';
 import { SocialMediaPlatform, PostResult } from '../../src/domain/models.js';
+import {
+    mockRssUrl,
+    MockRssFeedService,
+    MockContentGeneratorService,
+    MockSocialMediaService,
+    MockFailingSocialMediaService,
+    mockPostResult
+} from '../mock/index.js';
 
 describe('Application', () => {
-    const mockRssUrl = 'https://test.com/feed.xml';
     let mockReq: Partial<Request>;
     let mockRes: {
         status: jest.Mock;
         send: jest.Mock;
     };
+    let mockRssFeedService: MockRssFeedService;
+    let mockContentGeneratorService: MockContentGeneratorService;
+    let mockSocialMediaService: MockSocialMediaService;
 
     beforeEach(() => {
         mockRes = {
@@ -20,6 +30,12 @@ describe('Application', () => {
             body: {}
         };
 
+        // 初始化 mock 服務
+        mockRssFeedService = new MockRssFeedService();
+        mockContentGeneratorService = new MockContentGeneratorService();
+        mockSocialMediaService = new MockSocialMediaService();
+
+        // 重置所有 mock
         jest.clearAllMocks();
     });
 
@@ -53,15 +69,17 @@ describe('Application', () => {
         });
 
         it('should process RSS feed and post to social media successfully', async () => {
-            const expectedResults: PostResult[] = [
-                {
+            // 設置 mock 服務
+            jest.spyOn(socialMediaPostFlow, 'exec').mockImplementation(async () => {
+                const items = await mockRssFeedService.fetchItems(mockRssUrl);
+                const content = await mockContentGeneratorService.generateContent(items[0].content);
+                const result = await mockSocialMediaService.post({
                     platform: SocialMediaPlatform.FACEBOOK,
-                    success: true,
-                    postId: 'mock-post-id'
-                }
-            ];
-
-            jest.spyOn(socialMediaPostFlow, 'exec').mockResolvedValue(expectedResults);
+                    message: content,
+                    imageUrl: items[0].imageUrl
+                });
+                return [result];
+            });
 
             mockReq.body = { rssUrl: mockRssUrl };
 
@@ -74,20 +92,23 @@ describe('Application', () => {
             }
 
             expect(mockRes.status).toHaveBeenCalledWith(200);
-            expect(mockRes.send).toHaveBeenCalledWith({ platforms: expectedResults });
+            expect(mockRes.send).toHaveBeenCalledWith({ platforms: [mockPostResult] });
             expect(socialMediaPostFlow.exec).toHaveBeenCalledWith(mockRssUrl);
         });
 
         it('should handle errors during processing', async () => {
-            const expectedResults: PostResult[] = [
-                {
+            const mockFailingSocialMedia = new MockFailingSocialMediaService();
+            
+            jest.spyOn(socialMediaPostFlow, 'exec').mockImplementation(async () => {
+                const items = await mockRssFeedService.fetchItems(mockRssUrl);
+                const content = await mockContentGeneratorService.generateContent(items[0].content);
+                const result = await mockFailingSocialMedia.post({
                     platform: SocialMediaPlatform.FACEBOOK,
-                    success: false,
-                    error: 'Mock error'
-                }
-            ];
-
-            jest.spyOn(socialMediaPostFlow, 'exec').mockResolvedValue(expectedResults);
+                    message: content,
+                    imageUrl: items[0].imageUrl
+                });
+                return [result];
+            });
 
             mockReq.body = { rssUrl: mockRssUrl };
 
@@ -100,7 +121,13 @@ describe('Application', () => {
             }
 
             expect(mockRes.status).toHaveBeenCalledWith(200);
-            expect(mockRes.send).toHaveBeenCalledWith({ platforms: expectedResults });
+            expect(mockRes.send).toHaveBeenCalledWith({
+                platforms: [{
+                    platform: SocialMediaPlatform.FACEBOOK,
+                    success: false,
+                    error: 'Mock error'
+                }]
+            });
             expect(socialMediaPostFlow.exec).toHaveBeenCalledWith(mockRssUrl);
         });
 
