@@ -1,4 +1,4 @@
-import { FetchAPIRepository } from '../repository/index.js'
+import { FetchAPIRepository } from '../domain/models.js'
 import fetch, { Response }  from 'node-fetch';
 
 export class FetchAPIRepositoryImplement implements FetchAPIRepository {

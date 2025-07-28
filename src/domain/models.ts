@@ -36,4 +36,9 @@ export interface ContentGeneratorPort {
 
 export interface SocialMediaPort {
     post(content: SocialMediaPost): Promise<PostResult>;
+}
+
+export interface FetchAPIRepository {
+    getContent(path: string): Promise<Record<string, any>>;
+    postContent(path: string, body: Record<string, any>): Promise<Record<string, any>>;
 } 
