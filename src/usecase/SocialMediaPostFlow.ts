@@ -8,40 +8,46 @@ export class SocialMediaPostFlow {
     ) {}
 
     async exec(rssUrl: string): Promise<PostResult[]> {
-        // 1. Fetch RSS content
-        const items = await this.rssFeedService.fetchItems(rssUrl);
-        const results: PostResult[] = [];
+        try {
+            // 1. Fetch RSS content
+            const items = await this.rssFeedService.fetchItems(rssUrl);
+            const results: PostResult[] = [];
 
-        for (const item of items) {
-            try {
-                // 2. Generate social media content
-                const message = await this.contentGenerator.generateContent(item.contentSnippet);
+            for (const item of items) {
+                try {
+                    // 2. Generate social media content
+                    const message = await this.contentGenerator.generateContent(item.contentSnippet);
 
-                // 3. Post to all platforms
-                const postPromises = [
-                    this.socialMediaService.post({
-                        message,
-                        platform: SocialMediaPlatform.FACEBOOK
-                    }),
-                    this.socialMediaService.post({
-                        message,
-                        imageUrl: item.imageUrl,
-                        platform: SocialMediaPlatform.INSTAGRAM
-                    }),
-                    this.socialMediaService.post({
-                        message,
-                        imageUrl: item.imageUrl,
-                        platform: SocialMediaPlatform.THREADS
-                    })
-                ];
+                    // 3. Post to all platforms
+                    const postPromises = [
+                        this.socialMediaService.post({
+                            message,
+                            platform: SocialMediaPlatform.FACEBOOK
+                        }),
+                        this.socialMediaService.post({
+                            message,
+                            imageUrl: item.imageUrl,
+                            platform: SocialMediaPlatform.INSTAGRAM
+                        }),
+                        this.socialMediaService.post({
+                            message,
+                            imageUrl: item.imageUrl,
+                            platform: SocialMediaPlatform.THREADS
+                        })
+                    ];
 
-                const platformResults = await Promise.all(postPromises);
-                results.push(...platformResults);
-            } catch (error) {
-                console.error('Error processing RSS item:', error);
+                    const platformResults = await Promise.all(postPromises);
+                    results.push(...platformResults);
+                } catch (error) {
+                    console.error('Error processing RSS item:', error);
+                    // Continue with next item
+                }
             }
-        }
 
-        return results;
+            return results;
+        } catch (error) {
+            console.error('Error fetching RSS feed:', error);
+            return [];
+        }
     }
 } 

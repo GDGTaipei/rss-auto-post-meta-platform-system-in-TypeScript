@@ -1,15 +1,27 @@
-import type { JestConfigWithTsJest } from 'ts-jest'
+import type { Config } from '@jest/types';
 
-const jestConfig: JestConfigWithTsJest = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  setupFiles: ['dotenv/config'],
-  testPathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/node_modules/'],
-  testMatch: ['<rootDir>/test/**/*.test.ts'],
-  moduleNameMapper: {
-    '^@App/(.*)$': '<rootDir>/dist/src/$1',
-    '^lib/(.*)$': '<rootDir>/common/$1',
-  },
-}
+const config: Config.InitialOptions = {
+    preset: 'ts-jest',
+    testEnvironment: 'node',
+    moduleNameMapper: {
+        '^(\\.{1,2}/.*)\\.js$': '$1'
+    },
+    transform: {
+        '^.+\\.tsx?$': [
+            'ts-jest',
+            {
+                tsconfig: 'tsconfig.test.json'
+            }
+        ]
+    },
+    testMatch: [
+        '**/test/**/*.test.ts'
+    ],
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    setupFilesAfterEnv: ['<rootDir>/test/jest.setup.ts'],
+    testEnvironmentOptions: {
+        url: 'http://localhost'
+    }
+};
 
-export default jestConfig
+export default config;

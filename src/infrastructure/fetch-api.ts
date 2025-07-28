@@ -1,5 +1,5 @@
-import { FetchAPIRepository } from '../domain/models.js'
-import fetch, { Response }  from 'node-fetch';
+import { FetchAPIRepository } from '../domain/models.js';
+import fetch, { Response } from 'cross-fetch';
 
 export class FetchAPIRepositoryImplement implements FetchAPIRepository {
     private url: string = '';
@@ -23,8 +23,7 @@ export class FetchAPIRepositoryImplement implements FetchAPIRepository {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
-        return data as Record<string, any>;
+        return response.json();
     }
 
     async postContent(path: string, body: Record<string, any>): Promise<Record<string, any>> {
@@ -41,7 +40,6 @@ export class FetchAPIRepositoryImplement implements FetchAPIRepository {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
-        return data as Record<string, any>;
+        return response.json();
     }
 }  

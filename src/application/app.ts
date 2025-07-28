@@ -18,7 +18,7 @@ const contentGenerator = new ContentGeneratorService();
 const socialMediaService = new SocialMediaService();
 
 // Initialize use case
-const socialMediaPostFlow = new SocialMediaPostFlow(
+export const socialMediaPostFlow = new SocialMediaPostFlow(
     rssFeedService,
     contentGenerator,
     socialMediaService
@@ -34,10 +34,7 @@ app.post('/post', async (req, res) => {
 
     try {
         const results = await socialMediaPostFlow.exec(rssUrl);
-        const groupedResults = {
-            platforms: results
-        };
-        res.status(200).send(groupedResults);
+        res.status(200).send({ platforms: results });
     } catch (error) {
         if (error instanceof Error) {
             res.status(500).send({ error: error.message });

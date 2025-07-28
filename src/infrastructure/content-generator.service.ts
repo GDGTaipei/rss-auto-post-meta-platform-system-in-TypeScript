@@ -10,10 +10,14 @@ export class ContentGeneratorService implements ContentGeneratorPort {
         });
 
         if (!response.ok) {
-            throw new Error(`Failed to generate social media content: ${response.statusText}`);
+            throw new Error(`Failed to generate social media content${response.statusText ? ': ' + response.statusText : ''}`);
         }
 
-        const { content } = await response.json();
-        return content;
+        const data = await response.json();
+        if (!data.content) {
+            throw new Error('Invalid API response: missing content field');
+        }
+
+        return data.content;
     }
 } 
