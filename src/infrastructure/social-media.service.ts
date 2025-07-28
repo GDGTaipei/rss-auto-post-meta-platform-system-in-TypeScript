@@ -1,5 +1,5 @@
 import { SocialMediaPost, PostResult, SocialMediaPort, SocialMediaPlatform } from '../domain/models.js';
-import { FetchAPIFetchAPIRepositoryImplement } from './fetch-api.js';
+import { FetchAPIRepositoryImplement } from './fetch-api.js';
 import { config } from '../config/index.js';
 
 interface MetaApiResponse {
@@ -9,7 +9,7 @@ interface MetaApiResponse {
 
 export class SocialMediaService implements SocialMediaPort {
     async post(content: SocialMediaPost): Promise<PostResult> {
-        const fetchAPIRepository = new FetchAPIFetchAPIRepositoryImplement(
+        const fetchAPIRepository = new FetchAPIRepositoryImplement(
             `${config.meta.baseUrl}/${config.meta.apiVersion}`,
             this.getAccessToken(content.platform)
         );

@@ -1,39 +1,47 @@
 import { FetchAPIRepository } from '../repository/index.js'
-import fetch, { Request, Response }  from 'node-fetch';
+import fetch, { Response }  from 'node-fetch';
 
-export class FetchAPIFetchAPIRepositoryImplement implements FetchAPIRepository {
+export class FetchAPIRepositoryImplement implements FetchAPIRepository {
+    private url: string = '';
+    private apiToken: string = '';
 
-  private url: string = '';
-  private apiToken: string = '';
+    constructor(url: string, apiToken: string) { 
+        this.url = url;
+        this.apiToken = apiToken;
+    }
 
-  constructor(url:string, apiToken:string){ 
-    this.url = url;
-    this.apiToken = apiToken;
-  }
+    async getContent(path: string): Promise<Record<string, any>> {
+        const response: Response = await fetch(`${this.url}/${path}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': this.apiToken
+            }
+        });
 
-  async getContent(path:string, body: {[key:string]:string}): Promise<{ [key: string]: string }> {
-    const response : Response = await fetch(`${this.url}/${path}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': this.apiToken
-      },
-      body: JSON.stringify(body)
-    });
-    const data: Record<string, string> = await response.json() as Record<string, string>;
-    return data;
-  }
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-  async postContent(path:string, body: {[key:string]:string}): Promise<{ [key: string]: string }> {
-    const response : Response = await fetch(`${this.url}/${path}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': this.apiToken
-      },
-      body: JSON.stringify(body)
-    });
-    const data: Record<string, string> = await response.json() as Record<string, string>;
-    return data;
-  }
+        const data = await response.json();
+        return data as Record<string, any>;
+    }
+
+    async postContent(path: string, body: Record<string, any>): Promise<Record<string, any>> {
+        const response: Response = await fetch(`${this.url}/${path}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': this.apiToken
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data as Record<string, any>;
+    }
 }  
