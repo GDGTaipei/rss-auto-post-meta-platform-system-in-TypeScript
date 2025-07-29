@@ -10,8 +10,7 @@
         "firebase-debug.*.log",
         "*.local"
       ],
-      "predeploy": ["npm run build"],
-      "runtime": "nodejs18"
+      "predeploy": ["npm run build"]
     }
   ]
 }
