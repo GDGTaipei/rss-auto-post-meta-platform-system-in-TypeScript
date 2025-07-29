@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc",
+    "serve": "firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test-coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
