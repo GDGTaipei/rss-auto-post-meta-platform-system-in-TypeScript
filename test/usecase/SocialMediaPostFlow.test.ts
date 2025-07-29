@@ -1,11 +1,11 @@
-import { SocialMediaPostFlow } from '../../src/usecase/SocialMediaPostFlow';
-import { SocialMediaPlatform } from '../../src/domain/models';
-import { 
-    MockRssFeedService, 
-    MockContentGeneratorService, 
+import { SocialMediaPostFlow } from '../../src/usecase/SocialMediaPostFlow.js';
+import { SocialMediaPlatform } from '../../src/domain/models.js';
+import {
+    MockRssFeedService,
+    MockContentGeneratorService,
     MockSocialMediaService,
     MockFailingSocialMediaService
-} from '../mock';
+} from '../mock/index.js';
 
 describe('SocialMediaPostFlow', () => {
     let flow: SocialMediaPostFlow;
@@ -69,7 +69,7 @@ describe('SocialMediaPostFlow', () => {
         const results = await flow.exec(mockRssUrl);
 
         expect(results).toHaveLength(3);
-        results.forEach(result => {
+        results.forEach((result: any) => {
             expect(result.success).toBe(false);
             expect(result.error).toBe('Mock error');
         });
@@ -105,7 +105,7 @@ describe('SocialMediaPostFlow', () => {
 
         // Should still have results from the second item
         expect(results).toHaveLength(3);
-        results.forEach(result => {
+        results.forEach((result: any) => {
             expect(result.success).toBe(true);
         });
     });
