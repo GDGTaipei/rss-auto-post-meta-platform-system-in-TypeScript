@@ -2,9 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -12,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x, 22.x]
+        node-version: [22.x]
 
     steps:
     - uses: actions/checkout@v4
@@ -30,16 +29,15 @@ jobs:
         INSTAGRAM_PAGE_ID: ${{ secrets.INSTAGRAM_PAGE_ID }}
         INSTAGRAM_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PLATFORM_ACCESS_TOKEN }}
         THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+        CONFIG_JSON: ${{ secrets.FIREBASE_CONFIG_PRODUCTION }}
       run: |
-        echo "SOCIAL_MEDIA_POST_API_URL=${SOCIAL_MEDIA_POST_API_URL:-http://localhost:5001/rss-auto-post-meta-platform/us-central1/index}" >> .env
-        echo "FACEBOOK_PAGE_ID=${FACEBOOK_PAGE_ID:-dummy_facebook_page_id}" >> .env
-        echo "FACEBOOK_PAGE_ACCESS_TOKEN=${FACEBOOK_PAGE_ACCESS_TOKEN:-dummy_facebook_token}" >> .env
-        echo "INSTAGRAM_PAGE_ID=${INSTAGRAM_PAGE_ID:-dummy_instagram_page_id}" >> .env
-        echo "INSTAGRAM_PAGE_ACCESS_TOKEN=${INSTAGRAM_PAGE_ACCESS_TOKEN:-dummy_instagram_token}" >> .env
-        echo "THREADS_USER_ID=${THREADS_USER_ID:-dummy_threads_user_id}" >> .env
-        echo "THREADS_CLIENT_SECRET=${THREADS_CLIENT_SECRET:-dummy_threads_client_secret}" >> .env
-        echo "THREADS_SHORT_LIVED_TOKEN=${THREADS_SHORT_LIVED_TOKEN:-dummy_threads_short_lived_token}" >> .env
-        echo "THREADS_PAGE_ACCESS_TOKEN=${THREADS_PAGE_ACCESS_TOKEN:-dummy_threads_access_token}" >> .env
+        echo "SOCIAL_MEDIA_POST_API_URL=${{ env.SOCIAL_MEDIA_POST_API_URL }}" >> .env
+        echo "FACEBOOK_PAGE_ID=${{ env.FACEBOOK_PAGE_ID }}" >> .env
+        echo "FACEBOOK_PAGE_ACCESS_TOKEN=${{ env.FACEBOOK_PAGE_ACCESS_TOKEN }}" >> .env
+        echo "INSTAGRAM_PAGE_ID=${{ env.INSTAGRAM_PAGE_ID }}" >> .env
+        echo "INSTAGRAM_PAGE_ACCESS_TOKEN=${{ env.INSTAGRAM_PAGE_ACCESS_TOKEN }}" >> .env
+        echo "THREADS_USER_ID=${{ env.THREADS_USER_ID }}" >> .env
+        echo "CONFIG_JSON=${{ env.CONFIG_JSON }}" >> .env
         cat .env
 
     - name: Install dependencies
