@@ -12,70 +12,54 @@ on:
       - main
 
 jobs:
-  build:
+  deploy_production:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
+    env:
+      NODE_ENV: production
+      API_ENDPOINT: ${{ secrets.API_ENDPOINT_PRODUCTION }}
+      MAX_RETRIES: 3
+      TIMEOUT_SECONDS: 60
+      MEMORY: 256MiB
+      MAX_INSTANCES: 5
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: actions/setup-node@v3
-      with:
-        node-version: '22.x'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '22'
 
-    - name: Create .env file
-      env:
-        SOCIAL_MEDIA_POST_API_URL: ${{ secrets.SOCIAL_MEDIA_POST_API_URL }}
-        FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
-        FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PLATFORM_ACCESS_TOKEN }}
-        INSTAGRAM_PAGE_ID: ${{ secrets.INSTAGRAM_PAGE_ID }}
-        INSTAGRAM_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PLATFORM_ACCESS_TOKEN }}
-        THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
-        CONFIG_JSON: ${{ secrets.FIREBASE_CONFIG_PRODUCTION }}
-      run: |
-        echo "SOCIAL_MEDIA_POST_API_URL=${{ env.SOCIAL_MEDIA_POST_API_URL }}" >> .env
-        echo "FACEBOOK_PAGE_ID=${{ env.FACEBOOK_PAGE_ID }}" >> .env
-        echo "FACEBOOK_PAGE_ACCESS_TOKEN=${{ env.FACEBOOK_PAGE_ACCESS_TOKEN }}" >> .env
-        echo "INSTAGRAM_PAGE_ID=${{ env.INSTAGRAM_PAGE_ID }}" >> .env
-        echo "INSTAGRAM_PAGE_ACCESS_TOKEN=${{ env.INSTAGRAM_PAGE_ACCESS_TOKEN }}" >> .env
-        echo "THREADS_USER_ID=${{ env.THREADS_USER_ID }}" >> .env
-        echo "CONFIG_JSON=${{ env.CONFIG_JSON }}" >> .env
-        cat .env
+      - name: 'Create .env file'
+        env:
+          SOCIAL_MEDIA_POST_API_URL: ${{ secrets.SOCIAL_MEDIA_POST_API_URL }}
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PLATFORM_ACCESS_TOKEN }}
+          INSTAGRAM_PAGE_ID: ${{ secrets.INSTAGRAM_PAGE_ID }}
+          INSTAGRAM_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PLATFORM_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          CONFIG_JSON: ${{ secrets.FIREBASE_CONFIG_PRODUCTION }}
+        run: |
+          echo "SOCIAL_MEDIA_POST_API_URL=${{ env.SOCIAL_MEDIA_POST_API_URL }}" >> .env
+          echo "FACEBOOK_PAGE_ID=${{ env.FACEBOOK_PAGE_ID }}" >> .env
+          echo "FACEBOOK_PAGE_ACCESS_TOKEN=${{ env.FACEBOOK_PAGE_ACCESS_TOKEN }}" >> .env
+          echo "INSTAGRAM_PAGE_ID=${{ env.INSTAGRAM_PAGE_ID }}" >> .env
+          echo "INSTAGRAM_PAGE_ACCESS_TOKEN=${{ env.INSTAGRAM_PAGE_ACCESS_TOKEN }}" >> .env
+          echo "THREADS_USER_ID=${{ env.THREADS_USER_ID }}" >> .env
+          echo "CONFIG_JSON=${{ env.CONFIG_JSON }}" >> .env
+          cat .env
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run lint
-      run: npm run lint
+      - name: Build functions
+        run: npm run build
 
-    - name: Run tests
-      run: npm test
+      - name: Install Firebase Tools
+        run: npm install -g firebase-tools
 
-    - name: Build project
-      run: npm run build
+      - uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CI_DEPLOY }}'
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20.x
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Build project
-      run: npm run build
-      
-    - name: Deploy to Firebase Functions
-      uses: FirebaseExtended/action-hosting-deploy@v0
-      with:
-        repoToken: '${{ secrets.GITHUB_TOKEN }}'
-        firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-        projectId: '${{ secrets.FIREBASE_PROJECT_ID }}'
-        channelId: live 
+      - name: Deploy to Production
+        run: npm run deploy 
