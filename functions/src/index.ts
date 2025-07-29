@@ -1,6 +1,6 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { app } from "./application/app.js";
 
-exports.rssAutoPost = onRequest({
+export const rssAutoPost = onRequest({
     cors: true,
 }, app);
