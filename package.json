@@ -1,5 +1,5 @@
 {
     "scripts": {
-      "deploy": "firebase deploy --only functions --force"
+      "deploy": "firebase deploy --only functions:rssAutoPost"
     }
 }
