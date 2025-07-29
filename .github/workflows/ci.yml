@@ -26,13 +26,10 @@ jobs:
       env:
         SOCIAL_MEDIA_POST_API_URL: ${{ secrets.SOCIAL_MEDIA_POST_API_URL }}
         FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
-        FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+        FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PLATFORM_ACCESS_TOKEN }}
         INSTAGRAM_PAGE_ID: ${{ secrets.INSTAGRAM_PAGE_ID }}
-        INSTAGRAM_PAGE_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_PAGE_ACCESS_TOKEN }}
+        INSTAGRAM_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PLATFORM_ACCESS_TOKEN }}
         THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
-        THREADS_CLIENT_SECRET: ${{ secrets.THREADS_CLIENT_SECRET }}
-        THREADS_SHORT_LIVED_TOKEN: ${{ secrets.THREADS_SHORT_LIVED_TOKEN }}
-        THREADS_PAGE_ACCESS_TOKEN: ${{ secrets.THREADS_PAGE_ACCESS_TOKEN }}
       run: |
         echo "SOCIAL_MEDIA_POST_API_URL=${SOCIAL_MEDIA_POST_API_URL:-http://localhost:5001/rss-auto-post-meta-platform/us-central1/index}" >> .env
         echo "FACEBOOK_PAGE_ID=${FACEBOOK_PAGE_ID:-dummy_facebook_page_id}" >> .env
