@@ -10,7 +10,8 @@
         "firebase-debug.*.log",
         "*.local"
       ],
-      "predeploy": ["npm run build"]
+      "predeploy": ["npm run build"],
+      "runtime": "nodejs22"
     }
   ]
 }
